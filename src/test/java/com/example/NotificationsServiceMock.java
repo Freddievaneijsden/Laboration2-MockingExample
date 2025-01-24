@@ -1,10 +1,4 @@
-package com.example.bookingSystem;
-
-import com.example.Booking;
-import com.example.NotificationException;
-import com.example.NotificationService;
-
-import java.sql.SQLOutput;
+package com.example;
 
 public class NotificationsServiceMock implements NotificationService {
     @Override
