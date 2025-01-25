@@ -12,4 +12,7 @@ public class ShoppingCart {
         products.add(productName);
     }
 
+    public void removeProduct(Product productName) {
+        products.remove(productName);
+    }
 }
