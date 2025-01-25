@@ -53,4 +53,12 @@ public class ShoppingCartTest {
         assertThat(shoppingCart.getTotalPrice()).isEqualTo(milk.getPrice() + butter.getPrice());
     }
 
+    @Test
+    void applyDiscountForTotalPriceInShoppingCart() {
+        shoppingCart.addProduct(milk);
+        shoppingCart.addProduct(butter);
+
+        assertThat(DiscountService.addDiscountToProducts(shoppingCart, 20)).isEqualTo(48);
+    }
+
 }
