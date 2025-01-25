@@ -2,7 +2,7 @@ package com.example.uppgift2;
 
 public class Product {
     String name;
-    int price;
+    double price;
 
     public Product(String name, int price) {
         this.name = name;
@@ -13,7 +13,11 @@ public class Product {
         return name;
     }
 
-    public int getPrice() {
+    public double getPrice() {
         return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
     }
 }

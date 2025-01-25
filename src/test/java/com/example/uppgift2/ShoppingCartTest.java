@@ -50,7 +50,7 @@ public class ShoppingCartTest {
         shoppingCart.addProduct(milk);
         shoppingCart.addProduct(butter);
 
-        assertThat(shoppingCart.getTotalPrice()).isEqualTo(milk.getPrice() + butter.getPrice());
+        assertThat(shoppingCart.getTotalPrice()).isEqualTo(60);
     }
 
     @Test
@@ -58,7 +58,15 @@ public class ShoppingCartTest {
         shoppingCart.addProduct(milk);
         shoppingCart.addProduct(butter);
 
-        assertThat(DiscountService.addDiscountToProducts(shoppingCart, 20)).isEqualTo(48);
+        assertThat(DiscountService.addDiscountToAllProducts(shoppingCart, 20)).isEqualTo(48);
+    }
+
+    @Test
+    void applyDiscountForSingleProduct() {
+        shoppingCart.addProduct(milk);
+        DiscountService.addDiscountToProduct(milk, 10);
+
+        assertThat(milk.getPrice()).isEqualTo(18);
     }
 
 }
