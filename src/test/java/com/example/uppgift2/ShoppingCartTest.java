@@ -6,8 +6,8 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 public class ShoppingCartTest {
     ShoppingCart shoppingCart = new ShoppingCart();
-    Product milk = new Product("Milk");
-    Product butter = new Product("Butter");
+    Product milk = new Product("Milk", 20);
+    Product butter = new Product("Butter", 40);
 
     //Lägga till varor
     //Ta bort varor
@@ -24,7 +24,7 @@ public class ShoppingCartTest {
     void addProductToShoppingCart() {
         shoppingCart.addProduct(milk);
 
-        assertThat(shoppingCart.products.get(0)).isEqualTo(milk);
+        assertThat(shoppingCart.products.getFirst()).isEqualTo(milk);
     }
 
     @Test
@@ -43,6 +43,14 @@ public class ShoppingCartTest {
 
         assertThat(shoppingCart.products.isEmpty()).isTrue();
 
+    }
+
+    @Test
+    void calculateTotalPriceForProductsInShoppingCart() {
+        shoppingCart.addProduct(milk);
+        shoppingCart.addProduct(butter);
+
+        assertThat(shoppingCart.getTotalPrice()).isEqualTo(milk.getPrice() + butter.getPrice());
     }
 
 }
