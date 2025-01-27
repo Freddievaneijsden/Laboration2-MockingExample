@@ -123,7 +123,7 @@ public class ShoppingCartTest {
             DiscountService.addDiscountToAllProducts(shoppingCart, 101);
         });
 
-        assertThat(exception.getMessage()).isEqualTo("Discount limit exceeded, please try again");
+        assertThat(exception.getMessage()).isEqualTo("Invalid discount, please enter a number between 0 and 100");
     }
 
     @Test
@@ -132,7 +132,18 @@ public class ShoppingCartTest {
         shoppingCart.addProduct(butter);
 
         assertThat(DiscountService.addDiscountToAllProducts(shoppingCart, 100)).isEqualTo(0);
+    }
 
+    @Test
+    void discountLessThen0ShouldThrowException() {
+        shoppingCart.addProduct(milk);
+        shoppingCart.addProduct(butter);
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            DiscountService.addDiscountToAllProducts(shoppingCart, -1);
+        });
+
+        assertThat(exception.getMessage()).isEqualTo("Invalid discount, please enter a number between 0 and 100");
     }
 
 }
