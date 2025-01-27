@@ -45,7 +45,7 @@ public class ShoppingCart {
 
     public Optional<Product> findProductByName(String productName) {
         for (Product product : products) {
-            if (product.getName().equals(productName)) {
+            if (product.getName().toLowerCase().contains(productName.trim().toLowerCase())) {
                 return Optional.of(product);
             }
         }

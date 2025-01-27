@@ -106,6 +106,15 @@ public class ShoppingCartTest {
     }
 
     @Test
+    void findProductByNameThatIsPartiallyMatched() {
+        shoppingCart.addProduct(milk);
+        shoppingCart.addProduct(butter);
+
+        assertThat(shoppingCart.findProductByName("mi")).get().isEqualTo(milk);
+        
+    }
+
+    @Test
     void returnOptionalEmptyIfProductNameDoesNotExistInShoppingCart() {
         shoppingCart.addProduct(milk);
         shoppingCart.addProduct(butter);
