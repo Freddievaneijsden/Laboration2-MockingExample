@@ -3,6 +3,8 @@ package com.example.uppgift2;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ShoppingCartTest {
     ShoppingCart shoppingCart = new ShoppingCart();
@@ -43,7 +45,6 @@ public class ShoppingCartTest {
         shoppingCart.removeProduct(milk);
 
         assertThat(shoppingCart.products.isEmpty()).isTrue();
-
     }
 
     @Test
@@ -97,10 +98,19 @@ public class ShoppingCartTest {
     }
 
     @Test
-    void returnOptionalEmptyIfProductNameDoesNotExist() {
+    void returnOptionalEmptyIfProductNameDoesNotExistInShoppingCart() {
         shoppingCart.addProduct(milk);
         shoppingCart.addProduct(butter);
 
         assertThat(shoppingCart.findProductByName("Cheese")).isNotPresent();
+    }
+
+    @Test
+    void negativePriceShouldCastException() {
+        Exception exception = assertThrows(Exception.class, () -> {
+            // Code that should throw the exception
+            new Product("Tomato", -20);
+        });
+        assertThat(exception.getMessage()).isEqualTo("Price cannot be negative");
     }
 }
