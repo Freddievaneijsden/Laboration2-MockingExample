@@ -106,11 +106,33 @@ public class ShoppingCartTest {
     }
 
     @Test
-    void negativePriceShouldCastException() {
+    void negativePriceShouldThrowException() {
         Exception exception = assertThrows(Exception.class, () -> {
             // Code that should throw the exception
             new Product("Tomato", -20);
         });
         assertThat(exception.getMessage()).isEqualTo("Price cannot be negative");
     }
+
+    @Test
+    void discountGreaterThen100ShouldThrowException() {
+        shoppingCart.addProduct(milk);
+        shoppingCart.addProduct(butter);
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            DiscountService.addDiscountToAllProducts(shoppingCart, 101);
+        });
+
+        assertThat(exception.getMessage()).isEqualTo("Discount limit exceeded, please try again");
+    }
+
+    @Test
+    void discountEdgeCase() {
+        shoppingCart.addProduct(milk);
+        shoppingCart.addProduct(butter);
+
+        assertThat(DiscountService.addDiscountToAllProducts(shoppingCart, 100)).isEqualTo(0);
+
+    }
+
 }
