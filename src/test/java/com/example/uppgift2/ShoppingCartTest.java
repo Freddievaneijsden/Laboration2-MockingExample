@@ -146,4 +146,17 @@ public class ShoppingCartTest {
         assertThat(exception.getMessage()).isEqualTo("Invalid discount, please enter a number between 0 and 100");
     }
 
+    @Test
+    void totalPriceIs0WhenEmpty() {
+        assertThat(shoppingCart.getTotalPrice()).isEqualTo(0);
+    }
+
+    @Test
+    void addingNullProductShouldThrowException() {
+        Exception exception = assertThrows(NullPointerException.class, () -> {
+            shoppingCart.addProduct(null);
+        });
+        assertThat(exception.getMessage()).isEqualTo("Product cannot be null");
+    }
+
 }

@@ -9,10 +9,14 @@ public class ShoppingCart {
     List<Product> products = new ArrayList<>();
 
     public void addProduct(Product product) {
-        if (products.contains(product)) {
-            product.setQuantity(product.getQuantity() + 1);
+        if (product == null) {
+            throw new NullPointerException("Product cannot be null");
         }
-        else products.add(product);
+        else {
+            if (products.contains(product)) {
+                product.setQuantity(product.getQuantity() + 1);
+            } else products.add(product);
+        }
     }
 
     public void removeProduct(Product product) {
