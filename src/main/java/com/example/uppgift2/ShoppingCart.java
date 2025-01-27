@@ -2,6 +2,7 @@ package com.example.uppgift2;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class ShoppingCart {
 
@@ -33,5 +34,14 @@ public class ShoppingCart {
         for (Product product : products) {
             System.out.println(product);
         }
+    }
+
+    public Optional<Product> findProductByName(String productName) {
+        for (Product product : products) {
+            if (product.getName().equals(productName)) {
+                return Optional.of(product);
+            }
+        }
+        return Optional.empty();
     }
 }

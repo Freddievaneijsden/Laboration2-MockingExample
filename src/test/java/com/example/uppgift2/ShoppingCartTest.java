@@ -8,6 +8,7 @@ public class ShoppingCartTest {
     ShoppingCart shoppingCart = new ShoppingCart();
     Product milk = new Product("Milk", 20);
     Product butter = new Product("Butter", 40);
+    Product cheese = new Product("Cheese", 80);
 
     //Lägga till varor
     //Ta bort varor
@@ -84,5 +85,14 @@ public class ShoppingCartTest {
         shoppingCart.removeProduct(milk);
 
         assertThat(shoppingCart.products.getFirst().getQuantity()).isEqualTo(1);
+    }
+
+    @Test
+    void findProductByNameFromShoppingCart() {
+        shoppingCart.addProduct(milk);
+        shoppingCart.addProduct(butter);
+        shoppingCart.addProduct(cheese);
+
+        assertThat(shoppingCart.findProductByName("Cheese")).get().isEqualTo(cheese);
     }
 }
