@@ -95,4 +95,12 @@ public class ShoppingCartTest {
 
         assertThat(shoppingCart.findProductByName("Cheese")).get().isEqualTo(cheese);
     }
+
+    @Test
+    void returnOptionalEmptyIfProductNameDoesNotExist() {
+        shoppingCart.addProduct(milk);
+        shoppingCart.addProduct(butter);
+
+        assertThat(shoppingCart.findProductByName("Cheese")).isNotPresent();
+    }
 }
