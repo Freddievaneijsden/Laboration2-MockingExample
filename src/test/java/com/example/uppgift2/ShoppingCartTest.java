@@ -48,6 +48,14 @@ public class ShoppingCartTest {
     }
 
     @Test
+    void removeProductThatDoesNotExistInShoppingCart() {
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            shoppingCart.removeProduct(milk);
+        });
+        assertThat(exception.getMessage()).isEqualTo("Product not in shopping cart");
+    }
+
+    @Test
     void calculateTotalPriceForProductsInShoppingCart() {
         shoppingCart.addProduct(milk);
         shoppingCart.addProduct(butter);
@@ -152,7 +160,7 @@ public class ShoppingCartTest {
     }
 
     @Test
-    void addingNullProductShouldThrowException() {
+    void addingNullToShoppingCartShouldThrowException() {
         Exception exception = assertThrows(NullPointerException.class, () -> {
             shoppingCart.addProduct(null);
         });

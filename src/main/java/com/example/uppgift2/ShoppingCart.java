@@ -20,10 +20,13 @@ public class ShoppingCart {
     }
 
     public void removeProduct(Product product) {
-        if (products.contains(product) && product.getQuantity() > 1) {
+        if (products.contains(product)) {
+        if (product.getQuantity() > 1) {
             product.setQuantity(product.getQuantity() - 1);
         }
         else products.remove(product);
+    }
+        else throw new IllegalArgumentException("Product not in shopping cart");
     }
 
     public int getTotalPrice() {
