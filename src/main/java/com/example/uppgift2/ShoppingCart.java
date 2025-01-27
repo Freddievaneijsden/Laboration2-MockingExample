@@ -1,6 +1,5 @@
 package com.example.uppgift2;
 
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,12 +7,18 @@ public class ShoppingCart {
 
     List<Product> products = new ArrayList<>();
 
-    public void addProduct(Product productName) {
-        products.add(productName);
+    public void addProduct(Product product) {
+        if (products.contains(product)) {
+            product.setQuantity(product.getQuantity() + 1);
+        }
+        else products.add(product);
     }
 
-    public void removeProduct(Product productName) {
-        products.remove(productName);
+    public void removeProduct(Product product) {
+        if (products.contains(product) && product.getQuantity() > 1) {
+            product.setQuantity(product.getQuantity() - 1);
+        }
+        else products.remove(product);
     }
 
     public int getTotalPrice() {
@@ -22,5 +27,11 @@ public class ShoppingCart {
             total += product.getPrice();
         }
         return total;
+    }
+
+    public void showProductsInShoppingCart() {
+        for (Product product : products) {
+            System.out.println(product);
+        }
     }
 }

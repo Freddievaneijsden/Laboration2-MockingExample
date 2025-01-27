@@ -69,4 +69,20 @@ public class ShoppingCartTest {
         assertThat(milk.getPrice()).isEqualTo(18);
     }
 
+    @Test
+    void addSecondProductOfSameTypeInShoppingCart() {
+        shoppingCart.addProduct(milk);
+        shoppingCart.addProduct(milk);
+
+        assertThat(shoppingCart.products.getFirst().getQuantity()).isEqualTo(2);
+    }
+
+    @Test
+    void removeSecondProductOfSameTypeInShoppingCart() {
+        shoppingCart.addProduct(milk);
+        shoppingCart.addProduct(milk);
+        shoppingCart.removeProduct(milk);
+
+        assertThat(shoppingCart.products.getFirst().getQuantity()).isEqualTo(1);
+    }
 }
