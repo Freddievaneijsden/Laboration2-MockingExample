@@ -1,6 +1,4 @@
-package com.example.bookingSystem;
-
-import com.example.TimeProvider;
+package com.example;
 
 import java.time.LocalDateTime;
 
