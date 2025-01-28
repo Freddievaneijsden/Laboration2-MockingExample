@@ -1,7 +1,4 @@
-package com.example.bookingSystem;
-
-import com.example.Room;
-import com.example.RoomRepository;
+package com.example;
 
 import java.util.ArrayList;
 import java.util.List;

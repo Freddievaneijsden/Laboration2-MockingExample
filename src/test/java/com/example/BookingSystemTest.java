@@ -1,7 +1,5 @@
-package com.example.bookingSystem;
+package com.example;
 
-import com.example.BookingSystem;
-import com.example.Room;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
