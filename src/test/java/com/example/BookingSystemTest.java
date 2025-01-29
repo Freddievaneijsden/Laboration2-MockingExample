@@ -51,11 +51,13 @@ class BookingSystemTest {
         roomRepositoryMock.save(room2);
         roomRepositoryMock.save(room3);
     }
+
     @ParameterizedTest
     @MethodSource("roomProvider")
     @DisplayName("Available room should return true when booking")
     void availableRoomShouldReturnTrueWhenBooking(Room room) {
         boolean availableRoom = bookingSystem.bookRoom(room.getId(), startTime, endTime);
+
         assertThat(availableRoom).isEqualTo(true);
     }
 
@@ -66,6 +68,7 @@ class BookingSystemTest {
         bookingSystem.bookRoom(room.getId(), startTime, endTime);
 
         boolean unavailableRoom = bookingSystem.bookRoom(room.getId(), startTime, endTime);
+
         assertThat(unavailableRoom).isEqualTo(false);
     }
 
@@ -95,6 +98,7 @@ class BookingSystemTest {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             bookingSystem.bookRoom("1337", null, endTime);
         });
+
         assertThat(exception.getMessage()).isEqualTo("Bokning kräver giltiga start- och sluttider samt rum-id");
     }
 
@@ -104,6 +108,7 @@ class BookingSystemTest {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             bookingSystem.bookRoom("1337", startTime, null);
         });
+
         assertThat(exception.getMessage()).isEqualTo("Bokning kräver giltiga start- och sluttider samt rum-id");
     }
 
@@ -113,6 +118,7 @@ class BookingSystemTest {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             bookingSystem.bookRoom(null, startTime, endTime);
         });
+
         assertThat(exception.getMessage()).isEqualTo("Bokning kräver giltiga start- och sluttider samt rum-id");
     }
 
@@ -122,6 +128,7 @@ class BookingSystemTest {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             bookingSystem.bookRoom("1337", endTime, startTime);
         });
+
         assertThat(exception.getMessage()).isEqualTo("Sluttid måste vara efter starttid");
     }
 
@@ -151,6 +158,7 @@ class BookingSystemTest {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             bookingSystem.getAvailableRooms(endTime, startTime);
         });
+
         assertThat(exception.getMessage()).isEqualTo("Sluttid måste vara efter starttid");
     }
 
@@ -158,8 +166,8 @@ class BookingSystemTest {
     @DisplayName("Getting available rooms returns list of unbooked rooms")
     void gettingAvailableRoomsReturnsListOfUnbookedRooms() {
         bookingSystem.bookRoom("1337", startTime, endTime);
-
         List<Room> availableRooms = bookingSystem.getAvailableRooms(startTime, endTime);
+
         assertThat(availableRooms).isEqualTo(List.of(room2, room3));
     }
 
@@ -169,17 +177,19 @@ class BookingSystemTest {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             bookingSystem.cancelBooking(null);
         });
+
         assertThat(exception.getMessage()).isEqualTo("Boknings-id kan inte vara null");
     }
 
     @ParameterizedTest
-    @MethodSource ("roomProvider")
+    @MethodSource("roomProvider")
     @DisplayName("Cancelling booking should return true")
     void cancellingBookingShouldReturnTrue(Room room) {
         roomRepositoryMock.save(room);
         Booking booking = new Booking("Booking1234", room.getId(), startTime, endTime);
         room.addBooking(booking);
         boolean cancelledBooking = bookingSystem.cancelBooking("Booking1234");
+
         assertThat(cancelledBooking).isEqualTo(true);
     }
 
@@ -189,6 +199,7 @@ class BookingSystemTest {
         Booking booking = new Booking("Booking1234", room.getId(), startTime, endTime);
         room.addBooking(booking);
         boolean cancelledBooking = bookingSystem.cancelBooking("Unknown booking");
+
         assertThat(cancelledBooking).isEqualTo(false);
     }
 
@@ -200,6 +211,7 @@ class BookingSystemTest {
         Exception exception = assertThrows(IllegalStateException.class, () -> {
             bookingSystem.cancelBooking("Booking1234");
         });
+
         assertThat(exception.getMessage()).isEqualTo("Kan inte avboka påbörjad eller avslutad bokning");
     }
 }
