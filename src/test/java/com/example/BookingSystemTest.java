@@ -5,10 +5,11 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.when;
 
 class BookingSystemTest {
     Room room = new Room("1337", "Penthouse");
@@ -19,7 +20,6 @@ class BookingSystemTest {
     LocalDateTime startTime = LocalDateTime.of(2025, 2, 15, 13, 30);
     LocalDateTime endTime = LocalDateTime.of(2025, 2, 16, 14, 10);
     LocalDateTime pastTime = LocalDateTime.of(2025, 1, 16, 12, 0);
-    LocalDateTime futureTime = LocalDateTime.of(2025, 3, 16, 15, 0);
     NotificationsServiceMock notificationsServiceMock = new NotificationsServiceMock();
     BookingSystem bookingSystem = new BookingSystem(timeProviderMock, roomRepositoryMock, notificationsServiceMock);
 
@@ -146,5 +146,47 @@ class BookingSystemTest {
 
         List<Room> availableRooms = bookingSystem.getAvailableRooms(startTime, endTime);
         assertThat(availableRooms).isEqualTo(List.of(room2, room3));
+    }
+
+    @Test
+    @DisplayName("Null argument should throw exception while cancelling booking")
+    void nullArgumentShouldThrowExceptionWhileCancellingBooking() {
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            bookingSystem.cancelBooking(null);
+        });
+        assertThat(exception.getMessage()).isEqualTo("Boknings-id kan inte vara null");
+    }
+
+    @Test
+    @DisplayName("Cancelling booking should return true")
+    void cancellingBookingShouldReturnTrue() {
+        roomRepositoryMock.save(room);
+        Booking booking = new Booking("Booking1234", room.getId(), startTime, endTime);
+        room.addBooking(booking);
+        boolean cancelledBooking = bookingSystem.cancelBooking("Booking1234");
+        assertThat(cancelledBooking).isEqualTo(true);
+    }
+
+    @Test
+    @DisplayName("Cancelling booking that does not exist return false")
+    void cancellingBookingThatDoesNotExistReturnFalse() {
+        roomRepositoryMock.save(room);
+        Booking booking = new Booking("Booking1234", room.getId(), startTime, endTime);
+        room.addBooking(booking);
+        boolean cancelledBooking = bookingSystem.cancelBooking("Unknown booking");
+        assertThat(cancelledBooking).isEqualTo(false);
+    }
+
+    @Test
+    @DisplayName("Cancelling booking when startTime is before currentTime throws exception")
+    void cancellingBookingWhenStartTimeIsBeforeCurrentTimeThrowsException() {
+        roomRepositoryMock.save(room);
+        Booking booking = new Booking("Booking1234", room.getId(), pastTime, endTime);
+        room.addBooking(booking);
+        Exception exception = assertThrows(IllegalStateException.class, () -> {
+            bookingSystem.cancelBooking("Booking1234");
+        });
+        assertThat(exception.getMessage()).isEqualTo("Kan inte avboka påbörjad eller avslutad bokning");
+
     }
 }
