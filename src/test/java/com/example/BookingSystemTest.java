@@ -2,16 +2,27 @@ package com.example;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class BookingSystemTest {
+
+    static Stream<Arguments> roomProvider() {
+        return Stream.of(
+                Arguments.of(new Room("1337", "Penthouse")),
+                Arguments.of(new Room("2025", "Terrace")),
+                Arguments.of(new Room("1969", "Moon")));
+    }
+
     Room room = new Room("1337", "Penthouse");
     Room room2 = new Room("2025", "Terrace");
     Room room3 = new Room("1969", "Moon");
@@ -23,21 +34,23 @@ class BookingSystemTest {
     NotificationsServiceMock notificationsServiceMock = new NotificationsServiceMock();
     BookingSystem bookingSystem = new BookingSystem(timeProviderMock, roomRepositoryMock, notificationsServiceMock);
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("roomProvider")
     @DisplayName("Available room should return true when booking")
-    void availableRoomShouldReturnTrueWhenBooking() {
+    void availableRoomShouldReturnTrueWhenBooking(Room room) {
         roomRepositoryMock.save(room);
-        boolean availableRoom = bookingSystem.bookRoom("1337", startTime, endTime);
+        boolean availableRoom = bookingSystem.bookRoom(room.getId(), startTime, endTime);
         assertThat(availableRoom).isEqualTo(true);
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("roomProvider")
     @DisplayName("Unavailable room should return false when booking")
-    void UnavailableRoomShouldReturnFalseWhenBooking() {
+    void UnavailableRoomShouldReturnFalseWhenBooking(Room room) {
         roomRepositoryMock.save(room);
-        bookingSystem.bookRoom("1337", startTime, endTime);
+        bookingSystem.bookRoom(room.getId(), startTime, endTime);
 
-        boolean unavailableRoom =  bookingSystem.bookRoom("1337", startTime, endTime);
+        boolean unavailableRoom = bookingSystem.bookRoom(room.getId(), startTime, endTime);
         assertThat(unavailableRoom).isEqualTo(false);
     }
 
@@ -64,8 +77,8 @@ class BookingSystemTest {
     }
 
     @Test
-    @DisplayName("Booking room requires valid startTime")
-    void bookingRoomRequiresValidStartTime() {
+    @DisplayName("Booking room with invalid startTime throw exception")
+    void bookingRoomWithInvalidStartTimeThrowException() {
         roomRepositoryMock.save(room);
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             bookingSystem.bookRoom("1337", null, endTime);
@@ -74,8 +87,8 @@ class BookingSystemTest {
     }
 
     @Test
-    @DisplayName("Booking room requires valid endTime")
-    void bookingRoomRequiresValidEndTime() {
+    @DisplayName("Booking room with invalid endTime throw exception")
+    void bookingRoomWithInvalidEndTimeThrowException() {
         roomRepositoryMock.save(room);
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             bookingSystem.bookRoom("1337", startTime, null);
@@ -84,8 +97,8 @@ class BookingSystemTest {
     }
 
     @Test
-    @DisplayName("Booking room requires valid room")
-    void bookingRoomRequiresValidRoom() {
+    @DisplayName("Booking room with invalid roomId throw exception")
+    void bookingRoomWithInvalidRoomIdThrowException() {
         roomRepositoryMock.save(room);
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             bookingSystem.bookRoom(null, startTime, endTime);
@@ -94,8 +107,8 @@ class BookingSystemTest {
     }
 
     @Test
-    @DisplayName("Booking room requires startTime to be before endTime ")
-    void bookingRoomRequiresStartTimeToBeBeforeEndTime() {
+    @DisplayName("Booking room were startTime is after endTime throw exception")
+    void bookingRoomWereStartTimeIsAfterEndTimeThrowException() {
         roomRepositoryMock.save(room);
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             bookingSystem.bookRoom("1337", endTime, startTime);
@@ -104,8 +117,8 @@ class BookingSystemTest {
     }
 
     @Test
-    @DisplayName("Showing available rooms requires valid startTime")
-    void showingAvailableRoomsRequiresValidStartTime() {
+    @DisplayName("Getting available rooms when startTime is invalid should throw exception")
+    void gettingAvailableRoomsWhenStartTimeIsInvalidShouldThrowException() {
         roomRepositoryMock.save(room);
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             bookingSystem.getAvailableRooms(null, endTime);
@@ -115,8 +128,8 @@ class BookingSystemTest {
     }
 
     @Test
-    @DisplayName("Showing available rooms requires valid endTime")
-    void showingAvailableRoomsRequiresValidEndTime() {
+    @DisplayName("Getting available rooms when endTime is invalid should throw exception")
+    void gettingAvailableRoomsWhenEndTimeIsInvalidShouldThrowException() {
         roomRepositoryMock.save(room);
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             bookingSystem.getAvailableRooms(startTime, null);
@@ -126,8 +139,8 @@ class BookingSystemTest {
     }
 
     @Test
-    @DisplayName("Showing available rooms requires startTime to be before endTime ")
-    void showingAvailableRoomsRequiresStartTimeToBeBeforeEndTime() {
+    @DisplayName("Getting available rooms were startTime is after endTime throw exception")
+    void gettingAvailableRoomsWereStartTimeIsAfterEndTimeThrowException() {
         roomRepositoryMock.save(room);
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             bookingSystem.getAvailableRooms(endTime, startTime);
@@ -136,8 +149,8 @@ class BookingSystemTest {
     }
 
     @Test
-    @DisplayName("Showing available rooms should get unbooked rooms")
-    void showingAvailableRoomsShouldGetUnbookedRooms() {
+    @DisplayName("Getting available rooms returns list of unbooked rooms")
+    void gettingAvailableRoomsReturnsListOfUnbookedRooms() {
         roomRepositoryMock.save(room);
         roomRepositoryMock.save(room2);
         roomRepositoryMock.save(room3);
@@ -149,8 +162,8 @@ class BookingSystemTest {
     }
 
     @Test
-    @DisplayName("Null argument should throw exception while cancelling booking")
-    void nullArgumentShouldThrowExceptionWhileCancellingBooking() {
+    @DisplayName("Cancelling booking when argument is null should throw exception")
+    void cancellingBookingWhenArgumentIsNullShouldThrowException() {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             bookingSystem.cancelBooking(null);
         });
@@ -187,6 +200,5 @@ class BookingSystemTest {
             bookingSystem.cancelBooking("Booking1234");
         });
         assertThat(exception.getMessage()).isEqualTo("Kan inte avboka påbörjad eller avslutad bokning");
-
     }
 }
