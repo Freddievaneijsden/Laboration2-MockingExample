@@ -3,19 +3,31 @@ package com.example;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class BookingSystemTest {
+
+    /*
+    What operation are we testing?
+    Under what circumstances?
+    What is the expected result?
+    UnitOfWork_StateUnderTest_ExpectedBehavior
+     */
 
     static Stream<Arguments> roomProvider() {
         return Stream.of(
@@ -34,9 +46,20 @@ class BookingSystemTest {
     LocalDateTime pastTime;
     NotificationsServiceMock notificationsServiceMock;
     BookingSystem bookingSystem;
+    BookingSystem bookingSystemMockito;
+    LocalDateTime currentTimeMockito;
+    @Mock
+    RoomRepository roomRepositoryMockito;
+    @Mock
+    TimeProvider timeProviderMockito;
+    @Mock
+    NotificationService notificationServiceMockito;
+    @Mock
+    Room roomMockito;
 
     @BeforeEach
     void setUp() {
+        currentTimeMockito = LocalDateTime.of(2025, 2, 14, 13, 30);
         room = new Room("1337", "Penthouse");
         room2 = new Room("2025", "Terrace");
         room3 = new Room("1969", "Moon");
@@ -47,6 +70,7 @@ class BookingSystemTest {
         pastTime = LocalDateTime.of(2025, 1, 16, 12, 0);
         notificationsServiceMock = new NotificationsServiceMock();
         bookingSystem = new BookingSystem(timeProviderMock, roomRepositoryMock, notificationsServiceMock);
+        bookingSystemMockito = new BookingSystem(timeProviderMockito, roomRepositoryMockito, notificationServiceMockito);
         roomRepositoryMock.save(room);
         roomRepositoryMock.save(room2);
         roomRepositoryMock.save(room3);
@@ -70,6 +94,22 @@ class BookingSystemTest {
         boolean unavailableRoom = bookingSystem.bookRoom(room.getId(), startTime, endTime);
 
         assertThat(unavailableRoom).isEqualTo(false);
+    }
+
+    @Test
+    @DisplayName("Available room should return true when booking using mockito")
+    void availableRoomShouldReturnTrueWhenBookingUsingMockito() {
+        when(roomMockito.getId()).thenReturn("1337");
+        when(roomMockito.isAvailable(startTime, endTime)).thenReturn(true);
+
+        when(roomRepositoryMockito.findById("1337")).thenReturn(Optional.of(roomMockito));
+        doNothing().when(roomRepositoryMockito).save(roomMockito);
+
+        when(timeProviderMockito.getCurrentTime()).thenReturn(currentTimeMockito);
+
+        boolean availableRoom = bookingSystemMockito.bookRoom(roomMockito.getId(), startTime, endTime);
+
+        assertThat(availableRoom).isEqualTo(true);
     }
 
     @Test
