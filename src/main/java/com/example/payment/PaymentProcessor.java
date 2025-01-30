@@ -9,15 +9,17 @@ public class PaymentProcessor {
     private static final String API_KEY = "sk_test_123456";
     private final DatabaseConnection databaseConnection;
     private final EmailService emailService;
+    private final PaymentApi paymentApi;
 
-    public PaymentProcessor(DatabaseConnection databaseConnection, EmailService emailService) {
+    public PaymentProcessor(DatabaseConnection databaseConnection, EmailService emailService, PaymentApi paymentApi, PaymentApi paymentApi1) {
         this.databaseConnection = databaseConnection;
         this.emailService = emailService;
+        this.paymentApi = paymentApi1;
     }
 
     public boolean processPayment(double amount) {
         // Anropar extern betaltjänst direkt med statisk API-nyckel
-        PaymentApiResponse response = PaymentApi.charge(API_KEY, amount);
+        PaymentApiResponse response = paymentApi.charge(API_KEY, amount);
 
         // Skriver till databas direkt
         if (response.isSuccess()) {
