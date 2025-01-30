@@ -3,7 +3,6 @@ package com.example.uppgift2;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ShoppingCartTest {
@@ -12,6 +11,14 @@ public class ShoppingCartTest {
     Product butter = new Product("Butter", 40);
     Product cheese = new Product("Cheese", 80);
 
+    /*
+    What operation are we testing?
+    Under what circumstances?
+    What is the expected result?
+    UnitOfWork_StateUnderTest_ExpectedBehavior
+     */
+
+
     //Lägga till varor
     //Ta bort varor
     //Beräkna totalpris
@@ -19,28 +26,28 @@ public class ShoppingCartTest {
     //Hantera kvantitetsuppdateringar
 
     @Test
-    void createShoppingCart() {
+    void ShoppingCartShouldNotBeNull() {
         assertThat(shoppingCart).isNotNull();
     }
 
     @Test
-    void addProductToShoppingCart() {
+    void addProductSavesProductToShoppingCart() {
         shoppingCart.addProduct(milk);
 
-        assertThat(shoppingCart.products.getFirst()).isEqualTo(milk);
+        assertThat(shoppingCart.products.getFirst().getName()).isEqualTo("Milk");
     }
 
     @Test
-    void addTwoProductsToShoppingCart() {
+    void addProductsSavesProductsToShoppingCart() {
         shoppingCart.addProduct(milk);
         shoppingCart.addProduct(butter);
 
-        assertThat(shoppingCart.products.get(0)).isEqualTo(milk);
-        assertThat(shoppingCart.products.get(1)).isEqualTo(butter);
+        assertThat(shoppingCart.products.get(0).getName()).isEqualTo("Milk");
+        assertThat(shoppingCart.products.get(1).getName()).isEqualTo("Butter");
     }
 
     @Test
-    void removeProductFromShoppingCart() {
+    void removeProductRemovesProductFromShoppingCart() {
         shoppingCart.addProduct(milk);
         shoppingCart.removeProduct(milk);
 
@@ -48,7 +55,7 @@ public class ShoppingCartTest {
     }
 
     @Test
-    void removeProductThatDoesNotExistInShoppingCart() {
+    void removeProductThatDoesNotExistInShoppingCartThrowsException() {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             shoppingCart.removeProduct(milk);
         });
@@ -56,7 +63,7 @@ public class ShoppingCartTest {
     }
 
     @Test
-    void calculateTotalPriceForProductsInShoppingCart() {
+    void getTotalPriceForProductsInShoppingCartReturnsTotalPrice() {
         shoppingCart.addProduct(milk);
         shoppingCart.addProduct(butter);
 
@@ -64,7 +71,7 @@ public class ShoppingCartTest {
     }
 
     @Test
-    void applyDiscountForTotalPriceInShoppingCart() {
+    void addDiscountToAllProductsInShoppingCartReturnsTotalPriceWithDiscount() {
         shoppingCart.addProduct(milk);
         shoppingCart.addProduct(butter);
 
@@ -72,7 +79,7 @@ public class ShoppingCartTest {
     }
 
     @Test
-    void applyDiscountForSingleProduct() {
+    void addDiscountToProductInShoppingCartReturnsSinglePriceWithDiscount() {
         shoppingCart.addProduct(milk);
         DiscountService.addDiscountToProduct(milk, 10);
 
@@ -80,7 +87,7 @@ public class ShoppingCartTest {
     }
 
     @Test
-    void addSecondProductOfSameTypeInShoppingCart() {
+    void AddProductOfSameTypeIncreaseQuantityByOneInShoppingCart() {
         shoppingCart.addProduct(milk);
         shoppingCart.addProduct(milk);
 
@@ -88,7 +95,7 @@ public class ShoppingCartTest {
     }
 
     @Test
-    void removeSecondProductOfSameTypeInShoppingCart() {
+    void RemoveProductOfSameTypeDecreasesQuantityByOneInShoppingCart() {
         shoppingCart.addProduct(milk);
         shoppingCart.addProduct(milk);
         shoppingCart.removeProduct(milk);
@@ -97,7 +104,7 @@ public class ShoppingCartTest {
     }
 
     @Test
-    void findProductByNameFromShoppingCart() {
+    void findProductByNameReturnsProductFromShoppingCart() {
         shoppingCart.addProduct(milk);
         shoppingCart.addProduct(butter);
         shoppingCart.addProduct(cheese);
@@ -106,7 +113,7 @@ public class ShoppingCartTest {
     }
 
     @Test
-    void findProductByNameThatIsPartiallyMatched() {
+    void findProductByNameReturnsProductWhenNameIsPartiallyMatched() {
         shoppingCart.addProduct(milk);
         shoppingCart.addProduct(butter);
 
@@ -123,7 +130,7 @@ public class ShoppingCartTest {
     }
 
     @Test
-    void negativePriceShouldThrowException() {
+    void creatingProductWithNegativePriceShouldThrowException() {
         Exception exception = assertThrows(Exception.class, () -> {
             // Code that should throw the exception
             new Product("Tomato", -20);
@@ -132,7 +139,7 @@ public class ShoppingCartTest {
     }
 
     @Test
-    void discountGreaterThen100ShouldThrowException() {
+    void AddDiscountGreaterThen100ToShoppingCartShouldThrowException() {
         shoppingCart.addProduct(milk);
         shoppingCart.addProduct(butter);
 
@@ -144,7 +151,7 @@ public class ShoppingCartTest {
     }
 
     @Test
-    void discountEdgeCase() {
+    void AddDiscountToAllProductsWhen100ShouldReturn0() {
         shoppingCart.addProduct(milk);
         shoppingCart.addProduct(butter);
 
@@ -152,7 +159,7 @@ public class ShoppingCartTest {
     }
 
     @Test
-    void discountLessThen0ShouldThrowException() {
+    void AddDiscountToAllProductsLessThen0ShouldThrowException() {
         shoppingCart.addProduct(milk);
         shoppingCart.addProduct(butter);
 
@@ -164,12 +171,12 @@ public class ShoppingCartTest {
     }
 
     @Test
-    void totalPriceIs0WhenEmpty() {
+    void getTotalPriceWhenShoppingCartIsEmptyShouldReturn0() {
         assertThat(shoppingCart.getTotalPrice()).isEqualTo(0);
     }
 
     @Test
-    void addingNullToShoppingCartShouldThrowException() {
+    void AddProductNullToShoppingCartShouldThrowException() {
         Exception exception = assertThrows(NullPointerException.class, () -> {
             shoppingCart.addProduct(null);
         });

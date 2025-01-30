@@ -37,11 +37,6 @@ public class ShoppingCart {
         return total;
     }
 
-    public void showProductsInShoppingCart() {
-        for (Product product : products) {
-            System.out.println(product);
-        }
-    }
 
     public Optional<Product> findProductByName(String productName) {
         for (Product product : products) {
