@@ -4,12 +4,14 @@ import java.sql.SQLException;
 
 public class PaymentProcessor {
     //Add constructor which take dependencies as argument for easier testing
-    //Failed update to database will catch exception
+    //Catch exception if update to database fails
+
 
     private static final String API_KEY = "sk_test_123456";
     private final DatabaseConnection databaseConnection;
     private final EmailService emailService;
     private final PaymentApi paymentApi;
+    private PaymentApiResponse paymentApiResponse;
 
     public PaymentProcessor(DatabaseConnection databaseConnection, EmailService emailService, PaymentApi paymentApi, PaymentApi paymentApi1) {
         this.databaseConnection = databaseConnection;
@@ -19,10 +21,10 @@ public class PaymentProcessor {
 
     public boolean processPayment(double amount) {
         // Anropar extern betaltjänst direkt med statisk API-nyckel
-        PaymentApiResponse response = paymentApi.charge(API_KEY, amount);
+        paymentApiResponse = paymentApi.charge(API_KEY, amount);
 
         // Skriver till databas direkt
-        if (response.isSuccess()) {
+        if (paymentApiResponse.isSuccess()) {
             try {
                 databaseConnection.getInstance().executeUpdate("INSERT INTO payments (amount, status) VALUES (" + amount + ", 'SUCCESS')");
             } catch (SQLException e) {
@@ -31,10 +33,10 @@ public class PaymentProcessor {
         }
 
         // Skickar e-post direkt
-        if (response.isSuccess()) {
+        if (paymentApiResponse.isSuccess()) {
             emailService.sendPaymentConfirmation("user@example.com", amount);
         }
 
-        return response.isSuccess();
+        return paymentApiResponse.isSuccess();
     }
 }
