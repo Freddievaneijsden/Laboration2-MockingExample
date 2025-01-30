@@ -8,7 +8,7 @@ public class Booking {
     private final LocalDateTime startTime;
     private final LocalDateTime endTime;
 
-    public Booking(String id, String roomId, LocalDateTime startTime, LocalDateTime endTime) {
+    public Booking (String id, String roomId, LocalDateTime startTime, LocalDateTime endTime) {
         this.id = id;
         this.roomId = roomId;
         this.startTime = startTime;
