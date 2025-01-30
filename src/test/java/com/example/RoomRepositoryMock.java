@@ -11,16 +11,9 @@ implements RoomRepository {
 
     @Override
     public Optional<Room> findById(String id) {
-        Room searchedRoom = null;
-        for (int i = 0; i < rooms.size(); i++) {
-            if (rooms.get(i).getId().equals(id)) {
-                searchedRoom = rooms.get(i);
-            } else return Optional.empty();
-        }
-        if (searchedRoom == null)
-            return Optional.empty();
-
-        return Optional.of(searchedRoom);
+         return rooms.stream()
+                 .filter(room -> room.getId().equals(id))
+                 .findFirst();
     }
 
     @Override
