@@ -5,23 +5,23 @@ import java.sql.SQLException;
 public class PaymentProcessor {
     //Add constructor which take dependencies as argument for easier testing
     //Catch exception if update to database fails
+    //Remove hardcoded API_KEY to avoid tests from being dependent on real API key
 
-
-    private static final String API_KEY = "sk_test_123456";
+    private final String API_KEY; //"sk_test_123456";
     private final DatabaseConnection databaseConnection;
     private final EmailService emailService;
     private final PaymentApi paymentApi;
-    private PaymentApiResponse paymentApiResponse;
 
-    public PaymentProcessor(DatabaseConnection databaseConnection, EmailService emailService, PaymentApi paymentApi, PaymentApi paymentApi1) {
+    public PaymentProcessor(String apiKey, DatabaseConnection databaseConnection, EmailService emailService, PaymentApi paymentApi) {
+        this.API_KEY = apiKey;
         this.databaseConnection = databaseConnection;
         this.emailService = emailService;
-        this.paymentApi = paymentApi1;
+        this.paymentApi = paymentApi;
     }
 
     public boolean processPayment(double amount) {
         // Anropar extern betaltjänst direkt med statisk API-nyckel
-        paymentApiResponse = paymentApi.charge(API_KEY, amount);
+        PaymentApiResponse paymentApiResponse = paymentApi.charge(API_KEY, amount);
 
         // Skriver till databas direkt
         if (paymentApiResponse.isSuccess()) {
@@ -39,4 +39,6 @@ public class PaymentProcessor {
 
         return paymentApiResponse.isSuccess();
     }
+
+
 }
