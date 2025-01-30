@@ -26,7 +26,7 @@ public class ShoppingCartTest {
     //Hantera kvantitetsuppdateringar
 
     @Test
-    void ShoppingCartShouldNotBeNull() {
+    void shoppingCartShouldNotBeNull() {
         assertThat(shoppingCart).isNotNull();
     }
 
@@ -87,7 +87,7 @@ public class ShoppingCartTest {
     }
 
     @Test
-    void AddProductOfSameTypeIncreaseQuantityByOneInShoppingCart() {
+    void addProductOfSameTypeIncreaseQuantityByOneInShoppingCart() {
         shoppingCart.addProduct(milk);
         shoppingCart.addProduct(milk);
 
@@ -95,7 +95,7 @@ public class ShoppingCartTest {
     }
 
     @Test
-    void RemoveProductOfSameTypeDecreasesQuantityByOneInShoppingCart() {
+    void removeProductOfSameTypeDecreasesQuantityByOneInShoppingCart() {
         shoppingCart.addProduct(milk);
         shoppingCart.addProduct(milk);
         shoppingCart.removeProduct(milk);
@@ -139,7 +139,7 @@ public class ShoppingCartTest {
     }
 
     @Test
-    void AddDiscountGreaterThen100ToShoppingCartShouldThrowException() {
+    void addDiscountGreaterThen100ToShoppingCartShouldThrowException() {
         shoppingCart.addProduct(milk);
         shoppingCart.addProduct(butter);
 
@@ -151,7 +151,7 @@ public class ShoppingCartTest {
     }
 
     @Test
-    void AddDiscountToAllProductsWhen100ShouldReturn0() {
+    void addDiscountToAllProductsWhen100ShouldReturn0() {
         shoppingCart.addProduct(milk);
         shoppingCart.addProduct(butter);
 
@@ -159,7 +159,7 @@ public class ShoppingCartTest {
     }
 
     @Test
-    void AddDiscountToAllProductsLessThen0ShouldThrowException() {
+    void addDiscountToAllProductsLessThen0ShouldThrowException() {
         shoppingCart.addProduct(milk);
         shoppingCart.addProduct(butter);
 
@@ -176,7 +176,7 @@ public class ShoppingCartTest {
     }
 
     @Test
-    void AddProductNullToShoppingCartShouldThrowException() {
+    void addProductNullToShoppingCartShouldThrowException() {
         Exception exception = assertThrows(NullPointerException.class, () -> {
             shoppingCart.addProduct(null);
         });
