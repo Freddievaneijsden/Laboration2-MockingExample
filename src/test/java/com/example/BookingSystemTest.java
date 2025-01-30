@@ -7,6 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -46,7 +47,6 @@ class BookingSystemTest {
     LocalDateTime pastTime;
     NotificationsServiceMock notificationsServiceMock;
     BookingSystem bookingSystem;
-    BookingSystem bookingSystemMockito;
     LocalDateTime currentTimeMockito;
     @Mock
     RoomRepository roomRepositoryMockito;
@@ -56,6 +56,8 @@ class BookingSystemTest {
     NotificationService notificationServiceMockito;
     @Mock
     Room roomMockito;
+    @InjectMocks
+    BookingSystem bookingSystemMockito;
 
     @BeforeEach
     void setUp() {
@@ -70,7 +72,6 @@ class BookingSystemTest {
         pastTime = LocalDateTime.of(2025, 1, 16, 12, 0);
         notificationsServiceMock = new NotificationsServiceMock();
         bookingSystem = new BookingSystem(timeProviderMock, roomRepositoryMock, notificationsServiceMock);
-        bookingSystemMockito = new BookingSystem(timeProviderMockito, roomRepositoryMockito, notificationServiceMockito);
         roomRepositoryMock.save(room);
         roomRepositoryMock.save(room2);
         roomRepositoryMock.save(room3);
@@ -78,8 +79,8 @@ class BookingSystemTest {
 
     @ParameterizedTest
     @MethodSource("roomProvider")
-    @DisplayName("Available room should return true when booking")
-    void availableRoomShouldReturnTrueWhenBooking(Room room) {
+    @DisplayName("Booking room that is available should return true")
+    void bookingRoomThatIsAvailableShouldReturnTrue(Room room) {
         boolean availableRoom = bookingSystem.bookRoom(room.getId(), startTime, endTime);
 
         assertThat(availableRoom).isEqualTo(true);
@@ -87,8 +88,8 @@ class BookingSystemTest {
 
     @ParameterizedTest
     @MethodSource("roomProvider")
-    @DisplayName("Unavailable room should return false when booking")
-    void UnavailableRoomShouldReturnFalseWhenBooking(Room room) {
+    @DisplayName("Booking room that is unavailable should return false")
+    void bookingRoomThatIsUnavailableShouldReturnFalse(Room room) {
         bookingSystem.bookRoom(room.getId(), startTime, endTime);
 
         boolean unavailableRoom = bookingSystem.bookRoom(room.getId(), startTime, endTime);
@@ -97,8 +98,8 @@ class BookingSystemTest {
     }
 
     @Test
-    @DisplayName("Available room should return true when booking using mockito")
-    void availableRoomShouldReturnTrueWhenBookingUsingMockito() {
+    @DisplayName("Booking room that is available should return true using mockito")
+    void bookingRoomThatIsAvailableShouldReturnTrueUsingMockito() {
         when(roomMockito.getId()).thenReturn("1337");
         when(roomMockito.isAvailable(startTime, endTime)).thenReturn(true);
 
@@ -163,8 +164,8 @@ class BookingSystemTest {
     }
 
     @Test
-    @DisplayName("Booking room were startTime is after endTime throw exception")
-    void bookingRoomWereStartTimeIsAfterEndTimeThrowException() {
+    @DisplayName("Booking room when startTime is after endTime throw exception")
+    void bookingRoomWhenStartTimeIsAfterEndTimeThrowException() {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             bookingSystem.bookRoom("1337", endTime, startTime);
         });
@@ -193,8 +194,8 @@ class BookingSystemTest {
     }
 
     @Test
-    @DisplayName("Getting available rooms were startTime is after endTime throw exception")
-    void gettingAvailableRoomsWereStartTimeIsAfterEndTimeThrowException() {
+    @DisplayName("Getting available rooms when startTime is after endTime throw exception")
+    void gettingAvailableRoomsWhenStartTimeIsAfterEndTimeThrowException() {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             bookingSystem.getAvailableRooms(endTime, startTime);
         });
