@@ -1,7 +1,9 @@
 package com.example.payment;
 
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 public interface DatabaseConnection {
-    PreparedStatement getInstance();
+
+    void executeUpdate(String s) throws SQLException;
 }

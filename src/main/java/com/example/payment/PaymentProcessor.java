@@ -6,6 +6,7 @@ public class PaymentProcessor {
     //Add constructor which take dependencies as argument for easier testing
     //Catch exception if update to database fails
     //Remove hardcoded API_KEY to avoid tests from being dependent on real API key
+    //Remove getInstance() to avoid having to make mock PreparedStatement
 
     private final String API_KEY; //"sk_test_123456";
     private final DatabaseConnection databaseConnection;
@@ -26,7 +27,7 @@ public class PaymentProcessor {
         // Skriver till databas direkt
         if (paymentApiResponse.isSuccess()) {
             try {
-                databaseConnection.getInstance().executeUpdate("INSERT INTO payments (amount, status) VALUES (" + amount + ", 'SUCCESS')");
+                databaseConnection.executeUpdate("INSERT INTO payments (amount, status) VALUES (" + amount + ", 'SUCCESS')");
             } catch (SQLException e) {
                 e.printStackTrace();
             }
