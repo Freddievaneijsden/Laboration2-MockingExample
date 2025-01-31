@@ -42,28 +42,28 @@ class PaymentProcessorTest {
     }
 
     @Test
-    @DisplayName("Charge returns paymentApiRespons when given valid apiKey and amount")
-    void chargeReturnsPaymentApiResponsWhenGivenValidApiKeyAndAmount() {
-        PaymentApiResponseMock expectedRespons = new PaymentApiResponseMock(testApiKey, true, 100);
+    @DisplayName("Charge returns paymentApiResponse when given valid apiKey and amount")
+    void chargeReturnsPaymentApiResponseWhenGivenValidApiKeyAndAmount() {
+        PaymentApiResponseMock expectedResponse = new PaymentApiResponseMock(testApiKey, true, 100);
 
         paymentApiResponse = paymentApi.charge(testApiKey, 100);
 
-        assertThat(paymentApiResponse).isEqualTo(expectedRespons);
+        assertThat(paymentApiResponse).isEqualTo(expectedResponse);
     }
 
     @Test
-    @DisplayName("IsSuccess should return true when charge has been called successfully")
-    void isSuccessShouldReturnTrueWhenChargeHasBeenCalledSuccessfully() {
-        PaymentApiResponseMock expectedRespons = new PaymentApiResponseMock(testApiKey, true, 100);
+    @DisplayName("IsSuccess return true when charge is successful")
+    void isSuccessReturnTrueWhenChargeIsSuccessful() {
+        PaymentApiResponseMock expectedResponse = new PaymentApiResponseMock(testApiKey, true, 100);
 
         paymentApiResponse = paymentApi.charge(testApiKey, 100);
 
-        assertThat(paymentApiResponse.isSuccess()).isEqualTo(expectedRespons.isSuccess());
+        assertThat(paymentApiResponse.isSuccess()).isEqualTo(expectedResponse.isSuccess());
     }
 
     @Test
-    @DisplayName("SendPaymentConfirmation send email when email and amount is valid")
-    void sendPaymentConfirmationSendEmailWhenEmailAndAmountIsValid() {
+    @DisplayName("SendPaymentConfirmation should send email for valid email and amount")
+    void sendPaymentConfirmationShouldSendEmailForValidEmailAndAmount() {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         PrintStream originalOut = System.out;
         System.setOut(new PrintStream(outputStream));
@@ -76,8 +76,8 @@ class PaymentProcessorTest {
     }
 
     @Test
-    @DisplayName("ExecuteUpdate should update wasUpdateCalled to true")
-    void executeUpdateShouldUpdateWasUpdateCalledToTrue() {
+    @DisplayName("ExecuteUpdate should mark update as called")
+    void executeUpdateShouldMarkUpdateAsCalled() {
         boolean beforeCalledUpdate = databaseConnection.wasUpdateCalled();
 
         databaseConnection.executeUpdate("INSERT INTO payments (amount, status) VALUES (" + 100 + ", 'SUCCESS')");
@@ -93,16 +93,16 @@ class PaymentProcessorTest {
     }
 
     @Test
-    @DisplayName("ProcessPayment should return true when payment is successful")
-    void processPaymentShouldReturnTrueWhenPaymentIsSuccessful() {
+    @DisplayName("ProcessPayment return true when payment is successful")
+    void processPaymentReturnTrueWhenPaymentIsSuccessful() {
         boolean successfulPayment = paymentProcessor.processPayment(100);
 
         assertThat(successfulPayment).isEqualTo(true);
     }
 
     @Test
-    @DisplayName("ProcessPayment should return false when paymentApiRespons fail")
-    void processPaymentShouldReturnFalseWhenPaymentApiResponsFail() {
+    @DisplayName("ProcessPayment fails when PaymentApiResponse is unsuccessful")
+    void processPaymentFailsWhenPaymentApiResponseIsUnsuccessful() {
         PaymentProcessor paymentProcessorWithMockito = new PaymentProcessor(testApiKey, databaseConnection, emailService, paymentApiMockito);
         when(paymentApiMockito.charge(testApiKey, 100)).thenReturn(new PaymentApiResponseMock(testApiKey, false, 100));
 
