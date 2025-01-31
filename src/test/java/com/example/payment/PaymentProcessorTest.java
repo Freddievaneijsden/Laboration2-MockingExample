@@ -8,11 +8,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class PaymentProcessorTest {
 
     PaymentProcessor paymentProcessor;
-    DatabaseConnection databaseConnection;
+    DatabaseConnectionMock databaseConnection;
     EmailServiceMock emailService;
     PaymentApi paymentApi;
     PaymentApiResponse paymentApiResponse;
@@ -28,7 +29,7 @@ class PaymentProcessorTest {
     }
 
     @Test
-    @DisplayName("Payment Processor Is Not Null")
+    @DisplayName("PaymentProcessor Is Not Null")
     void paymentProcessorIsNotNull() {
         assertThat(paymentProcessor).isNotNull();
     }
@@ -44,7 +45,7 @@ class PaymentProcessorTest {
     }
 
     @Test
-    @DisplayName("isSuccess should return true when charge has been called successfully")
+    @DisplayName("IsSuccess should return true when charge has been called successfully")
     void isSuccessShouldReturnTrueWhenChargeHasBeenCalledSuccessfully() {
         PaymentApiResponseMock expectedRespons = new PaymentApiResponseMock(testApiKey, true, 100);
 
@@ -54,7 +55,7 @@ class PaymentProcessorTest {
     }
 
     @Test
-    @DisplayName("sendPaymentConfirmation send email when email and amount is valid")
+    @DisplayName("SendPaymentConfirmation send email when email and amount is valid")
     void sendPaymentConfirmationSendEmailWhenEmailAndAmountIsValid() {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         PrintStream originalOut = System.out;
@@ -66,4 +67,22 @@ class PaymentProcessorTest {
 
         assertThat(outputStream.toString().trim()).isEqualTo(("Email sent to testEmail confirming payment of 100.0"));
     }
+
+    @Test
+    @DisplayName("ExecuteUpdate should update wasUpdateCalled to true")
+    void executeUpdateShouldUpdateWasUpdateCalledToTrue() {
+        boolean beforeCalledUpdate = databaseConnection.wasUpdateCalled();
+
+        databaseConnection.executeUpdate("INSERT INTO payments (amount, status) VALUES (" + 100 + ", 'SUCCESS')");
+        boolean afterCalledUpdate = databaseConnection.wasUpdateCalled();
+
+        assertThat(databaseConnection.getLastQuery()).isEqualTo("INSERT INTO payments (amount, status) VALUES (" + 100 + ", 'SUCCESS')");
+        assertAll(
+                "Validating database update",
+                () -> assertThat(beforeCalledUpdate).isFalse(),
+                () -> assertThat(afterCalledUpdate).isTrue(),
+                () -> assertThat(databaseConnection.getLastQuery()).isEqualTo("INSERT INTO payments (amount, status) VALUES (" + 100 + ", 'SUCCESS')")
+        );
+    }
+
 }
