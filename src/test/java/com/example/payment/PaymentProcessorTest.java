@@ -3,13 +3,18 @@ package com.example.payment;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class PaymentProcessorTest {
 
     PaymentProcessor paymentProcessor;
@@ -19,6 +24,8 @@ class PaymentProcessorTest {
     PaymentApiResponse paymentApiResponse;
     String testApiKey = "testApiKey";
     String testEmail = "testEmail";
+    @Mock
+    PaymentApi paymentApiMockito;
 
     @BeforeEach
     void setUp() {
@@ -29,13 +36,13 @@ class PaymentProcessorTest {
     }
 
     @Test
-    @DisplayName("PaymentProcessor Is Not Null")
+    @DisplayName("PaymentProcessor is not null")
     void paymentProcessorIsNotNull() {
         assertThat(paymentProcessor).isNotNull();
     }
 
     @Test
-    @DisplayName("Charge Returns PaymentApiRespons When Given Valid ApiKey And Amount")
+    @DisplayName("Charge returns paymentApiRespons when given valid apiKey and amount")
     void chargeReturnsPaymentApiResponsWhenGivenValidApiKeyAndAmount() {
         PaymentApiResponseMock expectedRespons = new PaymentApiResponseMock(testApiKey, true, 100);
 
@@ -83,6 +90,25 @@ class PaymentProcessorTest {
                 () -> assertThat(afterCalledUpdate).isTrue(),
                 () -> assertThat(databaseConnection.getLastQuery()).isEqualTo("INSERT INTO payments (amount, status) VALUES (" + 100 + ", 'SUCCESS')")
         );
+    }
+
+    @Test
+    @DisplayName("ProcessPayment should return true when payment is successful")
+    void processPaymentShouldReturnTrueWhenPaymentIsSuccessful() {
+        boolean successfulPayment = paymentProcessor.processPayment(100);
+
+        assertThat(successfulPayment).isEqualTo(true);
+    }
+
+    @Test
+    @DisplayName("ProcessPayment should return false when paymentApiRespons fail")
+    void processPaymentShouldReturnFalseWhenPaymentApiResponsFail() {
+        PaymentProcessor paymentProcessorWithMockito = new PaymentProcessor(testApiKey, databaseConnection, emailService, paymentApiMockito);
+        when(paymentApiMockito.charge(testApiKey, 100)).thenReturn(new PaymentApiResponseMock(testApiKey, false, 100));
+
+        boolean failedPayment = paymentProcessorWithMockito.processPayment(100.0);
+
+        assertThat(failedPayment).isEqualTo(false);
     }
 
 }

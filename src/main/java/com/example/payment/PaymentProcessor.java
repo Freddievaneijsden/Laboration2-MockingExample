@@ -4,7 +4,7 @@ import java.sql.SQLException;
 
 public class PaymentProcessor {
     //Add constructor which take dependencies as argument for easier testing
-    //Catch exception if update to database fails
+    //Catch exception if update database fails
     //Remove hardcoded API_KEY to avoid tests from being dependent on real API key
     //Remove getInstance() to avoid having to make mock PreparedStatement
 
