@@ -1,6 +1,5 @@
 package com.example.payment;
 
-import org.apiguardian.api.API;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,5 +37,15 @@ class PaymentProcessorTest {
         paymentApiResponse = paymentApi.charge(testApiKey, 100);
 
         assertThat(paymentApiResponse).isEqualTo(expectedRespons);
+    }
+
+    @Test
+    @DisplayName("isSuccess should return true when charge has been called successfully")
+    void isSuccessShouldReturnTrueWhenChargeHasBeenCalledSuccessfully() {
+        PaymentApiResponseMock expectedRespons = new PaymentApiResponseMock(testApiKey, true, 100);
+
+        paymentApiResponse = paymentApi.charge(testApiKey, 100);
+
+        assertThat(paymentApiResponse.isSuccess()).isEqualTo(expectedRespons.isSuccess());
     }
 }
