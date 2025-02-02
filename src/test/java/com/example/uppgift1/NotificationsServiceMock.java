@@ -1,4 +1,4 @@
-package com.example;
+package com.example.uppgift1;
 
 public class NotificationsServiceMock implements NotificationService {
     @Override

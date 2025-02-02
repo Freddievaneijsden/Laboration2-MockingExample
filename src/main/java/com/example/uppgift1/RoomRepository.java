@@ -1,4 +1,4 @@
-package com.example;
+package com.example.uppgift1;
 
 import java.util.List;
 import java.util.Optional;

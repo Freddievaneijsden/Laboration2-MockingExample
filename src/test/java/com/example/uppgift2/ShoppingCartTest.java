@@ -11,20 +11,6 @@ public class ShoppingCartTest {
     Product butter = new Product("Butter", 40);
     Product cheese = new Product("Cheese", 80);
 
-    /*
-    What operation are we testing?
-    Under what circumstances?
-    What is the expected result?
-    UnitOfWork_StateUnderTest_ExpectedBehavior
-     */
-
-
-    //Lägga till varor
-    //Ta bort varor
-    //Beräkna totalpris
-    //Applicera rabatter
-    //Hantera kvantitetsuppdateringar
-
     @Test
     void shoppingCartShouldNotBeNull() {
         assertThat(shoppingCart).isNotNull();

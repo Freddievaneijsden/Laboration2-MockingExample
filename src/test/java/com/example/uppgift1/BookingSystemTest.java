@@ -1,4 +1,4 @@
-package com.example;
+package com.example.uppgift1;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -23,13 +22,6 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class BookingSystemTest {
-
-    /*
-    What operation are we testing?
-    Under what circumstances?
-    What is the expected result?
-    UnitOfWork_StateUnderTest_ExpectedBehavior
-     */
 
     static Stream<Arguments> roomProvider() {
         return Stream.of(
