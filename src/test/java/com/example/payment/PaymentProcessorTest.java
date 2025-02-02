@@ -31,7 +31,7 @@ class PaymentProcessorTest {
     void setUp() {
         databaseConnection = new DatabaseConnectionMock();
         emailService = new EmailServiceMock();
-        paymentApi = new PaymentApiMock(); 
+        paymentApi = new PaymentApiMock();
         paymentProcessor = new PaymentProcessor(testApiKey, databaseConnection, emailService, paymentApi);
     }
 

@@ -17,8 +17,7 @@ public class PaymentApiResponseMock implements PaymentApiResponse {
     public boolean isSuccess() {
         if (paymentStatus) {
             return true;
-        }
-        else return false;
+        } else return false;
     }
 
     @Override

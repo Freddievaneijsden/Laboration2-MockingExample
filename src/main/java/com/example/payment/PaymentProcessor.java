@@ -6,7 +6,7 @@ public class PaymentProcessor {
     //Add constructor which take dependencies as argument for easier testing
     //Catch exception if update database fails
     //Remove hardcoded API_KEY to avoid tests from being dependent on real API key
-    //Remove getInstance() to avoid having to make mock PreparedStatement
+    //Remove getInstance() to avoid having to mock PreparedStatement, implement executeUpdate instead
 
     private final String API_KEY; //"sk_test_123456";
     private final DatabaseConnection databaseConnection;
